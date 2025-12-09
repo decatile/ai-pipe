@@ -1,10 +1,11 @@
 from typing import Any, AsyncGenerator
 
-from fastapi import FastAPI, Depends
+from fastapi import FastAPI, Depends, Request
 from fastapi.responses import StreamingResponse
 from httpx import AsyncClient
 
 from src.config import ProfileSettings
+from src.plugins.abc import PluginContext
 from src.plugins.loader import load_pipeline_for_profile
 from src.utils.logger import get_logger
 from src.web.di import get_http_client
@@ -25,10 +26,16 @@ def define_for_profile(app: FastAPI, profile: ProfileSettings) -> None:
         return r.json()
 
     @app.post(f'/{profile.prefix}/v1/chat/completions')
-    async def completions(body: dict[str, Any], client: AsyncClient = Depends(get_http_client)) -> StreamingResponse:
+    async def completions(
+            request: Request,
+            client: AsyncClient = Depends(get_http_client)
+    ) -> StreamingResponse:
+        ctx = pipeline.process(PluginContext(headers=dict(request.headers), body=await request.json()))
+
         r = await client.post(
             f'{profile.base_url}/v1/chat/completions',
-            json=pipeline.process(body)
+            headers=ctx.headers,
+            json=ctx.body
         )
         r.raise_for_status()
 

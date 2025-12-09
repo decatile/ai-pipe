@@ -1,6 +1,4 @@
-from typing import Any
-
-from src.plugins.abc import AbstractPlugin
+from src.plugins.abc import AbstractPlugin, PluginContext
 from src.utils.logger import get_logger_by_class
 
 
@@ -9,9 +7,9 @@ class PluginPipeline(AbstractPlugin):
         self.log = get_logger_by_class(PluginPipeline)
         self.plugins = plugins
 
-    def process(self, body: dict[str, Any]) -> dict[str, Any]:
+    def process(self, ctx: PluginContext) -> PluginContext:
         self.log.info('Processing request...')
         for plugin in self.plugins:
-            body = plugin.process(body)
+            ctx = plugin.process(ctx)
         self.log.debug('Request successfully processed!')
-        return body
+        return ctx

@@ -1,14 +1,20 @@
 from abc import ABC, abstractmethod
 from typing import Any
 
+from pydantic import BaseModel
 from pydantic_settings import BaseSettings
 
 from src.utils.logger import get_logger_by_class
 
 
+class PluginContext(BaseModel):
+    headers: dict[str, Any]
+    body: dict[str, Any]
+
+
 class AbstractPlugin(ABC):
     @abstractmethod
-    def process(self, body: dict[str, Any]) -> dict[str, Any]: ...
+    def process(self, ctx: PluginContext) -> PluginContext: ...
 
 
 class BasePlugin[T: BaseSettings](AbstractPlugin, ABC):
