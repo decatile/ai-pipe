@@ -1,6 +1,6 @@
 from typing import Any, AsyncGenerator
 
-from fastapi import FastAPI, Depends, Request
+from fastapi import FastAPI, Depends, Request, HTTPException
 from fastapi.responses import StreamingResponse
 from httpx import AsyncClient
 
@@ -22,7 +22,10 @@ def define_for_profile(app: FastAPI, profile: ProfileSettings) -> None:
     @app.get(f'/{profile.prefix}/v1/models')
     async def models(client: AsyncClient = Depends(get_http_client)) -> Any:
         r = await client.get(f'{profile.base_url}/v1/models')
-        r.raise_for_status()
+
+        if r.status_code != 200:
+            raise HTTPException(r.status_code, {'error': r.text}, dict(r.headers))
+
         return r.json()
 
     @app.post(f'/{profile.prefix}/v1/chat/completions')
@@ -37,7 +40,9 @@ def define_for_profile(app: FastAPI, profile: ProfileSettings) -> None:
             headers=ctx.headers,
             json=ctx.body
         )
-        r.raise_for_status()
+
+        if r.status_code != 200:
+            raise HTTPException(r.status_code, {'error': r.text}, dict(r.headers))
 
         async def create_stream() -> AsyncGenerator[bytes]:
             async for chunk in r.aiter_bytes():
