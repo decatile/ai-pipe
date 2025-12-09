@@ -2,7 +2,7 @@ from typing import Any
 
 from pydantic_settings import BaseSettings
 
-from src.plugins.interface import AbstractPlugin
+from src.plugins.abc import BasePlugin
 
 
 class Settings(BaseSettings):
@@ -10,13 +10,14 @@ class Settings(BaseSettings):
     extra: dict[str, Any]
 
 
-class Plugin(AbstractPlugin[Settings]):
+class Plugin(BasePlugin[Settings]):
     def process(self, body: dict[str, Any]) -> dict[str, Any]:
         assert self.settings.overwrite, 'Currently only "overwrite: true" mode supported'
         for k, v in self.settings.extra.items():
             body[k] = v
         return body
 
-    @staticmethod
-    def settings_cls() -> type[Settings]:
-        return Settings
+#
+# Заметьте, что 'Settings' и 'Plugin' - имеют специальное значение в плагинах!
+# Они должны экспортировать именно эти имена.
+#

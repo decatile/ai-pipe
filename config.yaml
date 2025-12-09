@@ -1,5 +1,28 @@
+log:
+  version: 1
+  formatters:
+    standard:
+      format: '%(asctime)s [%(levelname)s] %(name)s: %(message)s'
+  handlers:
+    console:
+      class: logging.StreamHandler
+      formatter: standard
+      level: 20 # INFO
+    file:
+      class: logging.handlers.RotatingFileHandler
+      filename: app.log
+      maxBytes: 1048576
+      formatter: standard
+      level: 10 # DEBUG
+  loggers:
+    myaiproxy:
+      handlers: [ file, console ]
+      level: 10 # DEBUG
+      propagate: true
+
 cors:
   allowed_origins: [ ]
+
 profiles:
   - prefix: hello
     plugins:

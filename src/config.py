@@ -13,17 +13,14 @@ class PluginSettings(BaseSettings):
 
 
 class ProfileSettings(BaseSettings):
-    type Plugins = list[PluginSettings]
-
     prefix: str
-    plugins: Plugins
+    plugins: list[PluginSettings]
 
 
 class Settings(BaseSettings):
-    type Profiles = list[ProfileSettings]
-
+    log: dict[str, Any] = {}
     cors: CORSSettings = CORSSettings()
-    profiles: Profiles = []
+    profiles: list[ProfileSettings] = []
 
     model_config = SettingsConfigDict(yaml_file='config.yaml')
 
