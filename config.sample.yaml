@@ -27,9 +27,9 @@ profiles:
   - prefix: hello
     base_url: ...
     plugins:
-      - name: src.plugins.builtin.extra_body
+      - name: src.plugins.builtin.static
         config:
-          overwrite: true
-          extra:
+          headers: { }
+          body:
             provider:
               zdr: true

@@ -6,15 +6,17 @@ from src.plugins.abc import BasePlugin, PluginContext
 
 
 class Settings(BaseSettings):
-    overwrite: bool
-    extra: dict[str, Any]
+    body: dict[str, Any] = {}
+    headers: dict[str, Any] = {}
 
 
 class Plugin(BasePlugin[Settings]):
     def process(self, ctx: PluginContext) -> PluginContext:
-        assert self.settings.overwrite, 'Currently only "overwrite: true" mode supported'
-        for k, v in self.settings.extra.items():
+        for k, v in self.settings.body.items():
             ctx.body[k] = v
+        for k, v in self.settings.headers.items():
+            ctx.headers[k] = v
+
         return ctx
 
 #
