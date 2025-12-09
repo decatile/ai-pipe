@@ -1,5 +1,8 @@
 __pycache__
 .venv
 .idea
-config.yaml
 app.log
+
+# To write your own plugins, just clone repo and use files below
+config.yaml
+/plugins
