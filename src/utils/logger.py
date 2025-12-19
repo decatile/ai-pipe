@@ -7,7 +7,7 @@ root_logger = logging.getLogger('myaiproxy')
 
 
 def get_logger(name: str) -> logging.Logger:
-    return root_logger.getChild(name[4:])
+    return root_logger.getChild(name)
 
 
 def get_logger_by_class(cls: type) -> logging.Logger:
