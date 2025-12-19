@@ -15,7 +15,7 @@ log:
       formatter: standard
       level: 10 # DEBUG
   loggers:
-    myaiproxy:
+    ai-pipe:
       handlers: [ console ]
       level: 10 # DEBUG
       propagate: true

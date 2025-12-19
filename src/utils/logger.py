@@ -3,7 +3,7 @@ import logging.config
 from src.config import settings
 
 logging.config.dictConfig(settings.log)
-root_logger = logging.getLogger('myaiproxy')
+root_logger = logging.getLogger('ai-pipe')
 
 
 def get_logger(name: str) -> logging.Logger:
